@@ -119,6 +119,43 @@ function parseDay(dayStr, timeStr = null, timezone = null) {
     return targetDate;
 }
 
+function findUTCForTimezone(year, month, day, hours, minutes, timezone) {
+    // Try different UTC times until we find one that displays correctly in the target timezone
+    const targetString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    
+    // Start with a reasonable guess - try multiple starting points
+    const startingGuesses = [
+        new Date(Date.UTC(year, month - 1, day, hours, minutes)), // Direct UTC
+        new Date(Date.UTC(year, month - 1, day, hours - 12, minutes)), // 12 hours back
+        new Date(Date.UTC(year, month - 1, day, hours + 12, minutes))  // 12 hours forward
+    ];
+    
+    for (const initialGuess of startingGuesses) {
+        let utcTime = new Date(initialGuess);
+        
+        for (let attempt = 0; attempt < 25; attempt++) {
+            const formatter = new Intl.DateTimeFormat('sv-SE', {
+                timeZone: timezone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const formatted = formatter.format(utcTime);
+            if (formatted === targetString) {
+                return utcTime;
+            }
+            
+            // Adjust by 1 hour and try again
+            utcTime = new Date(utcTime.getTime() - (60 * 60 * 1000));
+        }
+    }
+    
+    return null; // Could not find a matching time
+}
+
 // Format time for display
 function formatTime(date, format24 = false) {
     const options = {
@@ -207,52 +244,21 @@ function initApp() {
             const hours = targetDate.getHours();
             const minutes = targetDate.getMinutes();
             
-            // Create a date that represents this time in the source timezone
-            // Method: Find what this time looks like in UTC when it's displayed in source TZ
-            
-            // First, create a temporary date in the source timezone at the same wall-clock time
-            const testTime = new Date();
-            testTime.setFullYear(year, month, day);
-            testTime.setHours(hours, minutes, 0, 0);
+            console.log(`Converting ${hours}:${minutes.toString().padStart(2, '0')} on ${year}-${(month+1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} from ${sourceTimezone} to local time`);
             
             // Find what UTC time would show this wall-clock time in the source timezone
             const targetUTC = findUTCForTimezone(year, month + 1, day, hours, minutes, sourceTimezone);
             if (targetUTC) {
+                console.log(`Found UTC time: ${targetUTC.toISOString()}`);
+                console.log(`This displays as: ${targetUTC.toLocaleString('en-US', { timeZone: sourceTimezone })}`);
                 targetDate = targetUTC;
+            } else {
+                console.warn('Could not find matching UTC time for timezone conversion');
             }
             
         } catch (e) {
             console.warn('Timezone conversion failed:', params.tz, e);
         }
-    }
-    
-    function findUTCForTimezone(year, month, day, hours, minutes, timezone) {
-        // Try different UTC times until we find one that displays correctly in the target timezone
-        const targetString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-        
-        // Start with a reasonable guess
-        let utcTime = new Date(Date.UTC(year, month - 1, day, hours, minutes));
-        
-        for (let attempt = 0; attempt < 25; attempt++) { // Try for up to 25 hours of adjustment
-            const formatter = new Intl.DateTimeFormat('sv-SE', {
-                timeZone: timezone,
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            const formatted = formatter.format(utcTime);
-            if (formatted === targetString) {
-                return utcTime;
-            }
-            
-            // Adjust by 1 hour and try again
-            utcTime = new Date(utcTime.getTime() - (60 * 60 * 1000));
-        }
-        
-        return null; // Could not find a matching time
     }
     
     // Display the result
