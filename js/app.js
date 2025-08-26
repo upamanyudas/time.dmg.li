@@ -231,75 +231,69 @@ function initApp() {
         document.getElementById('welcome').innerHTML = '<h1>Invalid Parameters</h1><p>Please check your URL format</p>';
         return;
     }
-    
+
     // Convert from source timezone to local timezone if source timezone specified
     if (params.tz && targetDate) {
         const sourceTimezone = resolveTimezone(params.tz);
         console.log('Source timezone resolved to:', sourceTimezone);
         
         try {
-            // Get the components as local time (what the user specified)
+            // Get the components as they should be interpreted in the source timezone
             const year = targetDate.getFullYear();
-            const month = targetDate.getMonth() + 1; // Convert to 1-12
+            const month = targetDate.getMonth() + 1;
             const day = targetDate.getDate();
             const hours = targetDate.getHours();
             const minutes = targetDate.getMinutes();
             
-            console.log(`Original input: ${hours}:${minutes.toString().padStart(2, '0')} on ${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
+            console.log(`Converting: ${hours}:${minutes.toString().padStart(2, '0')} on ${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} from ${sourceTimezone}`);
             
-            // Method: Use a much simpler approach
-            // Create the time string and use a known working method
-            const timeString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+            // Step 1: Create a date that represents this wall-clock time as if it were UTC
+            const wallClockAsUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+            console.log('Wall clock time as UTC:', wallClockAsUTC.toISOString());
             
-            // Create two test dates to understand the offset
-            const testDate = new Date();
+            // Step 2: Find out what the UTC offset is for the source timezone on this date
+            const sourceOffsetMinutes = getTimezoneOffsetForDate(wallClockAsUTC, sourceTimezone);
+            console.log(`${sourceTimezone} offset: ${sourceOffsetMinutes} minutes`);
             
-            // Get what "now" looks like in both timezones
-            const nowInSource = new Intl.DateTimeFormat('en-CA', {
-                timeZone: sourceTimezone,
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            }).format(testDate);
+            // Step 3: Convert to actual UTC by subtracting the source timezone offset
+            const actualUTC = new Date(wallClockAsUTC.getTime() - (sourceOffsetMinutes * 60 * 1000));
+            console.log('Actual UTC time:', actualUTC.toISOString());
             
-            const nowInLocal = new Intl.DateTimeFormat('en-CA', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            }).format(testDate);
+            // Step 4: The browser will automatically display this UTC time in the user's local timezone
+            targetDate = actualUTC;
             
-            console.log('Test - Now in source TZ:', nowInSource);
-            console.log('Test - Now in local TZ:', nowInLocal);
-            
-            // Calculate offset in minutes
-            const sourceDate = new Date(nowInSource);
-            const localDate = new Date(nowInLocal);
-            const offsetMs = localDate.getTime() - sourceDate.getTime();
-            const offsetMinutes = offsetMs / (1000 * 60);
-            
-            console.log('Calculated offset (minutes):', offsetMinutes);
-            
-            // Apply the offset to our target time
-            const originalTime = new Date(`${timeString}`);
-            const convertedTime = new Date(originalTime.getTime() + offsetMs);
-            
-            console.log('Original time:', originalTime.toISOString());
-            console.log('Converted time:', convertedTime.toISOString());
-            
-            targetDate = convertedTime;
+            console.log('Final result in local timezone:', targetDate.toString());
             
         } catch (e) {
             console.error('Timezone conversion failed:', e);
-            console.log('Falling back to original time');
         }
+    }
+
+    // Helper function to get timezone offset for a specific date
+    function getTimezoneOffsetForDate(date, timezone) {
+        // Create a date in the target timezone
+        const utcTime = date.getTime();
+        
+        // Format the UTC time as it would appear in the target timezone
+        const timeInTargetTZ = new Intl.DateTimeFormat('en-CA', {
+            timeZone: timezone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).format(new Date(utcTime));
+        
+        // Parse this back to a Date object (treating it as if it were UTC)
+        const timeInTargetTZAsDate = new Date(timeInTargetTZ + 'Z');
+        
+        // The difference is the timezone offset
+        const offsetMs = timeInTargetTZAsDate.getTime() - utcTime;
+        const offsetMinutes = offsetMs / (60 * 1000);
+        
+        return offsetMinutes;
     }
     
     // Display the result
