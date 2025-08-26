@@ -11,6 +11,7 @@ const TIMEZONES = {
     'JST': 'Asia/Tokyo',
     'AEST': 'Australia/Sydney',
     'NZST': 'Pacific/Auckland',
+    'NZDT': 'Pacific/Auckland',
     'CET': 'Europe/Paris'
 };
 

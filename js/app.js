@@ -120,40 +120,39 @@ function parseDay(dayStr, timeStr = null, timezone = null) {
 }
 
 function findUTCForTimezone(year, month, day, hours, minutes, timezone) {
-    // Try different UTC times until we find one that displays correctly in the target timezone
+    console.log(`Looking for UTC time that shows as ${hours}:${minutes.toString().padStart(2, '0')} on ${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} in ${timezone}`);
+    
+    // The target string we want to see when formatting in the source timezone
     const targetString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     
-    // Start with a reasonable guess - try multiple starting points
-    const startingGuesses = [
-        new Date(Date.UTC(year, month - 1, day, hours, minutes)), // Direct UTC
-        new Date(Date.UTC(year, month - 1, day, hours - 12, minutes)), // 12 hours back
-        new Date(Date.UTC(year, month - 1, day, hours + 12, minutes))  // 12 hours forward
-    ];
+    // Try a much wider range of UTC times
+    // Start from a base time and try different offsets
+    const baseUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
     
-    for (const initialGuess of startingGuesses) {
-        let utcTime = new Date(initialGuess);
+    // Try offsets from -18 to +18 hours (covers all possible timezone differences)
+    for (let offsetHours = -18; offsetHours <= 18; offsetHours++) {
+        const utcTime = new Date(baseUTC.getTime() + (offsetHours * 60 * 60 * 1000));
         
-        for (let attempt = 0; attempt < 25; attempt++) {
-            const formatter = new Intl.DateTimeFormat('sv-SE', {
-                timeZone: timezone,
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            const formatted = formatter.format(utcTime);
-            if (formatted === targetString) {
-                return utcTime;
-            }
-            
-            // Adjust by 1 hour and try again
-            utcTime = new Date(utcTime.getTime() - (60 * 60 * 1000));
+        const formatter = new Intl.DateTimeFormat('sv-SE', {
+            timeZone: timezone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        const formatted = formatter.format(utcTime);
+        console.log(`UTC ${utcTime.toISOString()} shows as ${formatted} in ${timezone}`);
+        
+        if (formatted === targetString) {
+            console.log(`✓ Found match! UTC time: ${utcTime.toISOString()}`);
+            return utcTime;
         }
     }
     
-    return null; // Could not find a matching time
+    console.warn(`Could not find UTC time that displays as ${targetString} in ${timezone}`);
+    return null;
 }
 
 // Format time for display
@@ -236,28 +235,70 @@ function initApp() {
     // Convert from source timezone to local timezone if source timezone specified
     if (params.tz && targetDate) {
         const sourceTimezone = resolveTimezone(params.tz);
+        console.log('Source timezone resolved to:', sourceTimezone);
+        
         try {
-            // Get the components as they should be interpreted in source timezone
+            // Get the components as local time (what the user specified)
             const year = targetDate.getFullYear();
-            const month = targetDate.getMonth(); // Note: getMonth() returns 0-11
+            const month = targetDate.getMonth() + 1; // Convert to 1-12
             const day = targetDate.getDate();
             const hours = targetDate.getHours();
             const minutes = targetDate.getMinutes();
             
-            console.log(`Converting ${hours}:${minutes.toString().padStart(2, '0')} on ${year}-${(month+1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} from ${sourceTimezone} to local time`);
+            console.log(`Original input: ${hours}:${minutes.toString().padStart(2, '0')} on ${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`);
             
-            // Find what UTC time would show this wall-clock time in the source timezone
-            const targetUTC = findUTCForTimezone(year, month + 1, day, hours, minutes, sourceTimezone);
-            if (targetUTC) {
-                console.log(`Found UTC time: ${targetUTC.toISOString()}`);
-                console.log(`This displays as: ${targetUTC.toLocaleString('en-US', { timeZone: sourceTimezone })}`);
-                targetDate = targetUTC;
-            } else {
-                console.warn('Could not find matching UTC time for timezone conversion');
-            }
+            // Method: Use a much simpler approach
+            // Create the time string and use a known working method
+            const timeString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+            
+            // Create two test dates to understand the offset
+            const testDate = new Date();
+            
+            // Get what "now" looks like in both timezones
+            const nowInSource = new Intl.DateTimeFormat('en-CA', {
+                timeZone: sourceTimezone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).format(testDate);
+            
+            const nowInLocal = new Intl.DateTimeFormat('en-CA', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).format(testDate);
+            
+            console.log('Test - Now in source TZ:', nowInSource);
+            console.log('Test - Now in local TZ:', nowInLocal);
+            
+            // Calculate offset in minutes
+            const sourceDate = new Date(nowInSource);
+            const localDate = new Date(nowInLocal);
+            const offsetMs = localDate.getTime() - sourceDate.getTime();
+            const offsetMinutes = offsetMs / (1000 * 60);
+            
+            console.log('Calculated offset (minutes):', offsetMinutes);
+            
+            // Apply the offset to our target time
+            const originalTime = new Date(`${timeString}`);
+            const convertedTime = new Date(originalTime.getTime() + offsetMs);
+            
+            console.log('Original time:', originalTime.toISOString());
+            console.log('Converted time:', convertedTime.toISOString());
+            
+            targetDate = convertedTime;
             
         } catch (e) {
-            console.warn('Timezone conversion failed:', params.tz, e);
+            console.error('Timezone conversion failed:', e);
+            console.log('Falling back to original time');
         }
     }
     
