@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Creator - Timezone Converter</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="./"><img src="logo.svg" alt="Timezone Converter" class="logo-img"></a>
+            </div>
+            <nav>
+                <a href="/" class="nav-link">Converter</a>
+                <a href="/creator.html" class="nav-link active">Link Creator</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="result-card">
+                <h1>Create Timezone Link</h1>
+                <form id="link-form">
+                    <div class="form-group">
+                        <label for="datetime">Date & Time</label>
+                        <input type="datetime-local" id="datetime" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone">Source Timezone</label>
+                        <select id="timezone" class="form-control">
+                            <option value="">Auto-detect</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Time Format</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" id="format12" name="format" value="12" checked>
+                                <label for="format12">12 Hour</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="format24" name="format" value="24">
+                                <label for="format24">24 Hour</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="countdown">
+                            <label for="countdown">Show Countdown</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="event">
+                            <label for="event">Create Event</label>
+                        </div>
+                    </div>
+
+                    <div id="event-options" style="display: none;">
+                        <div class="form-group">
+                            <label for="eventname">Event Name</label>
+                            <input type="text" id="eventname" class="form-control" placeholder="Meeting">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventdesc">Event Description</label>
+                            <textarea id="eventdesc" class="form-control" placeholder="Event details..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endtime">End Date & Time</label>
+                            <input type="datetime-local" id="endtime" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endtimezone">End Timezone</label>
+                            <select id="endtimezone" class="form-control">
+                                <option value="">Same as start</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="generated-url" id="generated-url">
+                    Configure options above to generate a link
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/timezones.js"></script>
+    <script src="js/creator.js"></script>
+</body>
+</html>

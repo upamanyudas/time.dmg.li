@@ -3,99 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Zone Converter</title>
+    <title>Timezone Converter</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
-    <!-- Header with logo -->
-    <header>
-        <div class="logo-container">
-            <svg class="logo" width="40" height="40" viewBox="0 0 40 40">
-                <!-- Placeholder for your SVG logo -->
-                <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2"/>
-                <path d="M20 8v12l8 4" stroke="currentColor" stroke-width="2" fill="none"/>
-            </svg>
-            <h1>TimeSync</h1>
-        </div>
-    </header>
-
-    <main>
-        <div class="container">
-            <!-- Navigation -->
-            <nav class="nav-tabs">
-                <button class="tab active" data-tab="converter">Time Converter</button>
-                <button class="tab" data-tab="creator">Link Creator</button>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="./"><img src="logo.svg" alt="Timezone Converter" class="logo-img"></a>
+            </div>
+            <nav id="navigation">
+                <a href="/" class="nav-link active">Converter</a>
+                <a href="/creator.html" class="nav-link">Link Creator</a>
             </nav>
+        </header>
 
-            <!-- Converter Page -->
-            <div id="converter" class="tab-content active">
-                <div class="result-card">
-                    <div id="result-display">
-                        <p class="placeholder">Enter a time in the URL or use the Link Creator</p>
-                    </div>
-                    <div id="countdown-display" class="countdown hidden"></div>
-                    <div id="event-actions" class="event-actions hidden">
-                        <button id="download-event" class="btn-primary">📅 Add to Calendar</button>
+        <main id="converter-view">
+            <div class="result-card" id="result-card" style="display: none;">
+                <div class="time-display" id="time-display"></div>
+                <div class="date-display" id="date-display"></div>
+                <div class="timezone-display" id="timezone-display"></div>
+                <div class="countdown" id="countdown" style="display: none;"></div>
+                <button id="download-btn" class="download-btn" style="display: none;">
+                    📅 Add to Calendar
+                </button>
+            </div>
+
+            <div class="welcome" id="welcome">
+                <h1>Timezone Converter</h1>
+                <p>Convert time across timezones with simple URL parameters</p>
+                <div class="examples">
+                    <h3>Examples:</h3>
+                    <div class="example-links">
+                        <a href="?time=7.30PM">?time=7.30PM</a>
+                        <a href="?time=1930&tz=IST">?time=1930&tz=IST</a>
+                        <a href="?day=sunday">?day=sunday</a>
+                        <a href="?date=20250827">?date=20250827</a>
+                        <a href="?time=2PM&event&eventname=Meeting">?time=2PM&event&eventname=Meeting</a>
                     </div>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Link Creator Page -->
-            <div id="creator" class="tab-content">
-                <div class="form-container">
-                    <h2>Create Time Conversion Link</h2>
-                    
-                    <div class="form-group">
-                        <label for="time-input">Time:</label>
-                        <input type="time" id="time-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="date-input">Date (optional):</label>
-                        <input type="date" id="date-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="timezone-select">From Timezone:</label>
-                        <select id="timezone-select"></select>
-                    </div>
-
-                    <div class="form-group checkbox-group">
-                        <label><input type="checkbox" id="format-24"> 24-hour format</label>
-                        <label><input type="checkbox" id="countdown-mode"> Countdown mode</label>
-                        <label><input type="checkbox" id="event-mode"> Event mode</label>
-                    </div>
-
-                    <div id="event-options" class="event-options hidden">
-                        <div class="form-group">
-                            <label for="event-name">Event Name:</label>
-                            <input type="text" id="event-name" placeholder="My Event">
-                        </div>
-                        <div class="form-group">
-                            <label for="event-desc">Description:</label>
-                            <textarea id="event-desc" placeholder="Event description..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="duration-input">Duration:</label>
-                            <input type="text" id="duration-input" placeholder="1h, 30m, 1h30m, etc.">
-                        </div>
-                    </div>
-
-                    <button id="generate-link" class="btn-primary">Generate Link</button>
-                    
-                    <div id="generated-link" class="generated-link hidden">
-                        <label>Generated URL:</label>
-                        <div class="link-output">
-                            <input type="text" id="link-result" readonly>
-                            <button id="copy-link" class="btn-secondary">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script src="script.js"></script>
+    <script src="js/timezones.js"></script>
+    <script src="js/ical.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
