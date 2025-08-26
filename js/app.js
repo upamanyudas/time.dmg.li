@@ -207,53 +207,72 @@ function initApp() {
             const hours = targetDate.getHours();
             const minutes = targetDate.getMinutes();
             
-            // Create a date string that can be parsed as being in the source timezone
+            // Create a proper UTC date by finding what UTC time gives us the desired local time in source TZ
+            // We use the "guess and adjust" method
+            
+            // Step 1: Create an initial guess - assume the time is already in the target timezone
             const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
             
-            // The key insight: we need to find what UTC time gives us our desired time when displayed in source TZ
-            // We'll use binary search approach to find the correct UTC time
+            // Step 2: Create two dates - one assuming UTC, one assuming local
+            const utcGuess = new Date(dateStr + 'Z');
+            const localGuess = new Date(dateStr);
             
-            let testUtc = new Date(dateStr + 'Z'); // Start with assuming it's UTC
-            let attempts = 0;
-            const maxAttempts = 10;
+            // Step 3: See what these dates look like when formatted in the source timezone
+            const formatter = new Intl.DateTimeFormat('sv-SE', {
+                timeZone: sourceTimezone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
             
-            while (attempts < maxAttempts) {
-                // Format this UTC time as it would appear in the source timezone
-                const formattedInSource = new Intl.DateTimeFormat('sv-SE', {
-                    timeZone: sourceTimezone,
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }).format(testUtc);
-                
-                const expectedFormat = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                
-                if (formattedInSource === expectedFormat) {
-                    targetDate = testUtc;
-                    break;
-                }
-                
-                // Calculate the difference and adjust
-                const actualParts = formattedInSource.split(/[-\s:]/);
-                const actualHours = parseInt(actualParts[3]);
-                const actualMinutes = parseInt(actualParts[4]);
-                const actualTotalMinutes = actualHours * 60 + actualMinutes;
+            const utcInSource = formatter.format(utcGuess);
+            const localInSource = formatter.format(localGuess);
+            const expectedFormat = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            
+            // Step 4: Use whichever one matches, or calculate the correct offset
+            if (utcInSource === expectedFormat) {
+                targetDate = utcGuess;
+            } else if (localInSource === expectedFormat) {
+                targetDate = localGuess;
+            } else {
+                // Neither matches exactly, so we need to calculate the offset
+                // Use the difference between what we want and what UTC gives us
+                const utcParts = utcInSource.split(/[-\s:]/);
+                const utcHours = parseInt(utcParts[3]);
+                const utcMinutes = parseInt(utcParts[4]);
+                const utcTotalMinutes = utcHours * 60 + utcMinutes;
                 const expectedTotalMinutes = hours * 60 + minutes;
-                const diffMinutes = expectedTotalMinutes - actualTotalMinutes;
+                const diffMinutes = expectedTotalMinutes - utcTotalMinutes;
                 
-                // Adjust by the difference
-                testUtc = new Date(testUtc.getTime() + (diffMinutes * 60 * 1000));
-                attempts++;
-            }
-            
-            if (attempts >= maxAttempts) {
-                console.warn('Could not accurately convert timezone after', maxAttempts, 'attempts');
+                // Adjust the UTC time by the difference
+                targetDate = new Date(utcGuess.getTime() + (diffMinutes * 60 * 1000));
             }
             
         } catch (e) {
             console.warn('Timezone conversion failed:', params.tz, e);
+            // Fallback: try using the Date constructor with timezone offset
+            try {
+                const year = targetDate.getFullYear();
+                const month = targetDate.getMonth() + 1;
+                const day = targetDate.getDate();
+                const hours = targetDate.getHours();
+                const minutes = targetDate.getMinutes();
+                
+                // Get timezone offset for the source timezone
+                const tempDate = new Date();
+                const sourceOffset = new Intl.DateTimeFormat('en', {
+                    timeZone: sourceTimezone,
+                    timeZoneName: 'longOffset'
+                }).formatToParts(tempDate).find(part => part.type === 'timeZoneName')?.value || 'GMT+0000';
+                
+                // Create date string with timezone offset
+                const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00 ${sourceOffset}`;
+                targetDate = new Date(dateStr);
+            } catch (fallbackError) {
+                console.warn('Fallback timezone conversion also failed:', fallbackError);
+            }
         }
     }
     
