@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Timezone Converter</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/docs.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="/"><img src="logo.svg" alt="Timezone Converter" class="logo-img"></a>
+            </div>
+            <nav>
+                <a href="/" class="nav-link">Converter</a>
+                <a href="/creator.html" class="nav-link">Link Creator</a>
+                <a href="/docs.html" class="nav-link active">Docs</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="docs-header">
+                <h1>Documentation</h1>
+                <div class="search-box">
+                    <input type="text" id="search" placeholder="Search documentation..." />
+                </div>
+            </div>
+
+            <div class="docs-content">
+                <section class="doc-section" data-keywords="time parameter format">
+                    <h2>&time</h2>
+                    <p>This is the base parameter. Specify the source time using the <code>&time</code> parameter. The time can be specified in 12 or 24 hour formats:</p>
+                    <div class="code-examples">
+                        <a href="/?time=7.30PM">?time=7.30PM</a>
+                        <a href="/?time=1930">?time=1930</a>
+                        <a href="/?time=2:30AM">?time=2:30AM</a>
+                        <a href="/?time=14:30">?time=14:30</a>
+                    </div>
+                </section>
+
+                <section class="doc-section" data-keywords="date parameter format">
+                    <h2>&date</h2>
+                    <p>Use YYYYMMDD format for specific dates</p>
+                    <div class="code-examples">
+                        <a href="/?date=20250827">?date=20250827</a>
+                        <a href="/?date=20241225">?date=20241225</a>
+                    </div>
+                </section>
+
+                <section class="doc-section" data-keywords="day parameter weekday">
+                    <h2>&day</h2>
+                    <p>Specify weekdays (defaults to next occurrence)</p>
+                    <div class="code-examples">
+                        <a href="/?day=monday">?day=monday</a>
+                        <a href="/?day=sunday&time=9AM">?day=sunday&time=9AM</a>
+                    </div>
+                </section>
+
+                <section class="doc-section" data-keywords="timezone parameter tz">
+                    <h2>&tz</h2>
+                    <p>Convert from specific timezone using <code>&tz</code></p>
+                    <div class="code-examples">
+                        <a href="/?time=2PM&tz=IST">?time=2PM&tz=IST</a>
+                        <a href="/?time=9AM&tz=PST">?time=9AM&tz=PST</a>
+                        <a href="/?time=3PM&tz=Europe/London">?time=3PM&tz=Europe/London</a>
+                    </div>
+                </section>
+
+                <section class="doc-section" data-keywords="format 12 24 hour">
+                    <h2>&12 or &24</h2>
+                    <p>Control time display format</p>
+                    <div class="code-examples">
+                        <a href="/?time=2PM&12">?time=2PM&12</a>
+                        <a href="/?time=14:00&24">?time=14:00&24</a>
+                    </div>
+                </section>
+
+                <section class="doc-section" data-keywords="countdown timer">
+                    <h2>&countdown</h2>
+                    <p>Show countdown timer to the time specified</p>
+                    <div class="code-examples">
+                        <a href="/?time=3PM&countdown">?time=3PM&countdown</a>
+                    </div>
+                </section>
+
+                <section class="doc-section" data-keywords="event calendar ical">
+                    <h2>&event | &eventname | &eventdesc</h2>
+                    <p>Create calendar events with download</p>
+                    <div class="code-examples">
+                        <a href="/?time=2PM&event&eventname=Meeting">?time=2PM&event&eventname=Meeting</a>
+                        <a href="/?time=10AM&event&eventname=Call&eventdesc=Weekly sync">?time=10AM&event&eventname=Call&eventdesc=Weekly sync</a>
+                        <a href="/?time=9AM&event&eventname=Workshop&endtime=11AM">?time=9AM&event&eventname=Workshop&endtime=11AM</a>
+                    </div>
+                </section>
+
+                <section class="doc-section" data-keywords="end time duration">
+                    <h2>&endtime | &endtz</h2>
+                    <p>Set event end time and timezone</p>
+                    <div class="code-examples">
+                        <a href="/?time=2PM&event&eventname=Meeting&endtime=3PM">?time=2PM&event&eventname=Meeting&endtime=3PM</a>
+                        <a href="/?time=9AM&event&eventname=Workshop&endtime=5PM&endtz=EST">?time=9AM&event&eventname=Workshop&endtime=5PM&endtz=EST</a>
+                    </div>
+                </section>
+
+                <section class="doc-section" data-keywords="examples usage">
+                    <h2>Complete Examples</h2> 
+                    <div class="code-examples">
+                        <a href="/?time=7.30PM&tz=IST&countdown">?time=7.30PM&tz=IST&countdown</a>
+                        <a href="/?day=monday&time=9AM&event&eventname=Standup">?day=monday&time=9AM&event&eventname=Standup</a>
+                        <a href="/?date=20241225&time=6PM&event&eventname=Christmas&eventdesc=Family dinner">?date=20241225&time=6PM&event&eventname=Christmas&eventdesc=Family dinner</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/docs.search.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+/* Documentation page styles */
+.docs-header { text-align: center; margin-bottom: 40px; }
+.docs-header h1 { font-size: 2.5rem; margin-bottom: 20px; }
+.search-box { max-width: 400px; margin: 0 auto; }
+.search-box input { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; }
+.search-box input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
+
+.docs-content { max-width: 700px; margin: 0 auto; }
+.doc-section { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+.doc-section h2 { color: var(--accent-color); margin-bottom: 12px; font-size: 1.3rem; }
+.doc-section p { margin-bottom: 16px; color: var(--text-color); line-height: 1.5; }
+
+code { text-decoration: none; background: var(--code-bg); padding: 2px; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem; color: #495057; border: 1px solid #e9ecef; text-align: left; border-radius: 4px; }
+.code-examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.code-examples a { text-decoration: none; border-left: 4px solid var(--accent-color); background: var(--code-bg); padding: 8px 12px; border-radius: 6px; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem; color: #495057; border: 1px solid #e9ecef; text-align: left }
+.code-examples a:hover { background: var(--code-bg-hover); }
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .docs-header h1 { font-size: 2rem; }
+  .doc-section { padding: 20px; }
+  .code-examples { flex-direction: column; }
+  .code-examples a { text-align: left; }
+}
