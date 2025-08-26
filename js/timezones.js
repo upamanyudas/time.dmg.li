@@ -10,6 +10,7 @@ const TIMEZONES = {
     'UTC': 'UTC',
     'JST': 'Asia/Tokyo',
     'AEST': 'Australia/Sydney',
+    'NZST': 'Pacific/Auckland',
     'CET': 'Europe/Paris'
 };
 

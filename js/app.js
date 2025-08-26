@@ -196,55 +196,64 @@ function initApp() {
         return;
     }
     
-    // Convert from source timezone to local timezone if source timezone specified  
+    // Convert from source timezone to local timezone if source timezone specified
     if (params.tz) {
         const sourceTimezone = resolveTimezone(params.tz);
         try {
-            // Format the target date as it would appear in the source timezone
+            // Get the date components as they should be interpreted in the source timezone
             const year = targetDate.getFullYear();
-            const month = (targetDate.getMonth() + 1).toString().padStart(2, '0'); 
-            const day = targetDate.getDate().toString().padStart(2, '0');
-            const hours = targetDate.getHours().toString().padStart(2, '0');
-            const minutes = targetDate.getMinutes().toString().padStart(2, '0');
+            const month = targetDate.getMonth() + 1;
+            const day = targetDate.getDate();
+            const hours = targetDate.getHours();
+            const minutes = targetDate.getMinutes();
             
-            // Create a date assuming this time is in the source timezone
-            // We'll create it as if it's UTC, then find what UTC time would give us this local time in source TZ
-            const testDate = new Date(`${year}-${month}-${day}T${hours}:${minutes}:00`);
+            // Create a date string that can be parsed as being in the source timezone
+            const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
             
-            // Get what this time looks like when formatted in the source timezone
-            const sourceFormatter = new Intl.DateTimeFormat('sv-SE', {
-                timeZone: sourceTimezone,
-                year: 'numeric',
-                month: '2-digit', 
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
+            // The key insight: we need to find what UTC time gives us our desired time when displayed in source TZ
+            // We'll use binary search approach to find the correct UTC time
             
-            // Find the UTC time that produces our desired time in the source timezone
-            let utcTime = new Date(`${year}-${month}-${day}T${hours}:${minutes}:00Z`);
+            let testUtc = new Date(dateStr + 'Z'); // Start with assuming it's UTC
+            let attempts = 0;
+            const maxAttempts = 10;
             
-            // Adjust iteratively to find the correct UTC time
-            for (let i = 0; i < 5; i++) {
-                const formattedInSource = sourceFormatter.format(utcTime);
-                const expectedFormat = `${year}-${month}-${day} ${hours}:${minutes}:00`;
+            while (attempts < maxAttempts) {
+                // Format this UTC time as it would appear in the source timezone
+                const formattedInSource = new Intl.DateTimeFormat('sv-SE', {
+                    timeZone: sourceTimezone,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }).format(testUtc);
+                
+                const expectedFormat = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
                 
                 if (formattedInSource === expectedFormat) {
+                    targetDate = testUtc;
                     break;
                 }
                 
-                const actualTime = new Date(formattedInSource.replace(' ', 'T') + 'Z');
-                const expectedTime = new Date(expectedFormat.replace(' ', 'T') + 'Z');
-                const diff = expectedTime.getTime() - actualTime.getTime();
-                utcTime = new Date(utcTime.getTime() + diff);
+                // Calculate the difference and adjust
+                const actualParts = formattedInSource.split(/[-\s:]/);
+                const actualHours = parseInt(actualParts[3]);
+                const actualMinutes = parseInt(actualParts[4]);
+                const actualTotalMinutes = actualHours * 60 + actualMinutes;
+                const expectedTotalMinutes = hours * 60 + minutes;
+                const diffMinutes = expectedTotalMinutes - actualTotalMinutes;
+                
+                // Adjust by the difference
+                testUtc = new Date(testUtc.getTime() + (diffMinutes * 60 * 1000));
+                attempts++;
             }
             
-            targetDate = utcTime;
+            if (attempts >= maxAttempts) {
+                console.warn('Could not accurately convert timezone after', maxAttempts, 'attempts');
+            }
             
         } catch (e) {
             console.warn('Timezone conversion failed:', params.tz, e);
-            // Fallback: treat as if no timezone was specified
         }
     }
     
