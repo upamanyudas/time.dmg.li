@@ -197,29 +197,45 @@ function initApp() {
     }
     
     // Convert from source timezone to local timezone if source timezone specified
-    if (params.tz) {
+    if (params.tz && targetDate) {
         const sourceTimezone = resolveTimezone(params.tz);
         try {
-            // Get the date components as they should be interpreted in the source timezone
+            // Get the components as they should be interpreted in source timezone
             const year = targetDate.getFullYear();
-            const month = targetDate.getMonth() + 1;
+            const month = targetDate.getMonth(); // Note: getMonth() returns 0-11
             const day = targetDate.getDate();
             const hours = targetDate.getHours();
             const minutes = targetDate.getMinutes();
             
-            // Create a proper UTC date by finding what UTC time gives us the desired local time in source TZ
-            // We use the "guess and adjust" method
+            // Create a date that represents this time in the source timezone
+            // Method: Find what this time looks like in UTC when it's displayed in source TZ
             
-            // Step 1: Create an initial guess - assume the time is already in the target timezone
-            const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+            // First, create a temporary date in the source timezone at the same wall-clock time
+            const testTime = new Date();
+            testTime.setFullYear(year, month, day);
+            testTime.setHours(hours, minutes, 0, 0);
             
-            // Step 2: Create two dates - one assuming UTC, one assuming local
-            const utcGuess = new Date(dateStr + 'Z');
-            const localGuess = new Date(dateStr);
+            // Find what UTC time would show this wall-clock time in the source timezone
+            const targetUTC = findUTCForTimezone(year, month + 1, day, hours, minutes, sourceTimezone);
+            if (targetUTC) {
+                targetDate = targetUTC;
+            }
             
-            // Step 3: See what these dates look like when formatted in the source timezone
+        } catch (e) {
+            console.warn('Timezone conversion failed:', params.tz, e);
+        }
+    }
+    
+    function findUTCForTimezone(year, month, day, hours, minutes, timezone) {
+        // Try different UTC times until we find one that displays correctly in the target timezone
+        const targetString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        
+        // Start with a reasonable guess
+        let utcTime = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+        
+        for (let attempt = 0; attempt < 25; attempt++) { // Try for up to 25 hours of adjustment
             const formatter = new Intl.DateTimeFormat('sv-SE', {
-                timeZone: sourceTimezone,
+                timeZone: timezone,
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -227,53 +243,16 @@ function initApp() {
                 minute: '2-digit'
             });
             
-            const utcInSource = formatter.format(utcGuess);
-            const localInSource = formatter.format(localGuess);
-            const expectedFormat = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            
-            // Step 4: Use whichever one matches, or calculate the correct offset
-            if (utcInSource === expectedFormat) {
-                targetDate = utcGuess;
-            } else if (localInSource === expectedFormat) {
-                targetDate = localGuess;
-            } else {
-                // Neither matches exactly, so we need to calculate the offset
-                // Use the difference between what we want and what UTC gives us
-                const utcParts = utcInSource.split(/[-\s:]/);
-                const utcHours = parseInt(utcParts[3]);
-                const utcMinutes = parseInt(utcParts[4]);
-                const utcTotalMinutes = utcHours * 60 + utcMinutes;
-                const expectedTotalMinutes = hours * 60 + minutes;
-                const diffMinutes = expectedTotalMinutes - utcTotalMinutes;
-                
-                // Adjust the UTC time by the difference
-                targetDate = new Date(utcGuess.getTime() + (diffMinutes * 60 * 1000));
+            const formatted = formatter.format(utcTime);
+            if (formatted === targetString) {
+                return utcTime;
             }
             
-        } catch (e) {
-            console.warn('Timezone conversion failed:', params.tz, e);
-            // Fallback: try using the Date constructor with timezone offset
-            try {
-                const year = targetDate.getFullYear();
-                const month = targetDate.getMonth() + 1;
-                const day = targetDate.getDate();
-                const hours = targetDate.getHours();
-                const minutes = targetDate.getMinutes();
-                
-                // Get timezone offset for the source timezone
-                const tempDate = new Date();
-                const sourceOffset = new Intl.DateTimeFormat('en', {
-                    timeZone: sourceTimezone,
-                    timeZoneName: 'longOffset'
-                }).formatToParts(tempDate).find(part => part.type === 'timeZoneName')?.value || 'GMT+0000';
-                
-                // Create date string with timezone offset
-                const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00 ${sourceOffset}`;
-                targetDate = new Date(dateStr);
-            } catch (fallbackError) {
-                console.warn('Fallback timezone conversion also failed:', fallbackError);
-            }
+            // Adjust by 1 hour and try again
+            utcTime = new Date(utcTime.getTime() - (60 * 60 * 1000));
         }
+        
+        return null; // Could not find a matching time
     }
     
     // Display the result
