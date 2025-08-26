@@ -119,42 +119,6 @@ function parseDay(dayStr, timeStr = null, timezone = null) {
     return targetDate;
 }
 
-function findUTCForTimezone(year, month, day, hours, minutes, timezone) {
-    console.log(`Looking for UTC time that shows as ${hours}:${minutes.toString().padStart(2, '0')} on ${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} in ${timezone}`);
-    
-    // The target string we want to see when formatting in the source timezone
-    const targetString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-    
-    // Try a much wider range of UTC times
-    // Start from a base time and try different offsets
-    const baseUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes));
-    
-    // Try offsets from -18 to +18 hours (covers all possible timezone differences)
-    for (let offsetHours = -18; offsetHours <= 18; offsetHours++) {
-        const utcTime = new Date(baseUTC.getTime() + (offsetHours * 60 * 60 * 1000));
-        
-        const formatter = new Intl.DateTimeFormat('sv-SE', {
-            timeZone: timezone,
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        const formatted = formatter.format(utcTime);
-        console.log(`UTC ${utcTime.toISOString()} shows as ${formatted} in ${timezone}`);
-        
-        if (formatted === targetString) {
-            console.log(`✓ Found match! UTC time: ${utcTime.toISOString()}`);
-            return utcTime;
-        }
-    }
-    
-    console.warn(`Could not find UTC time that displays as ${targetString} in ${timezone}`);
-    return null;
-}
-
 // Format time for display
 function formatTime(date, format24 = false) {
     const options = {
@@ -271,29 +235,46 @@ function initApp() {
 
     // Helper function to get timezone offset for a specific date
     function getTimezoneOffsetForDate(date, timezone) {
-        // Create a date in the target timezone
-        const utcTime = date.getTime();
-        
-        // Format the UTC time as it would appear in the target timezone
-        const timeInTargetTZ = new Intl.DateTimeFormat('en-CA', {
-            timeZone: timezone,
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-        }).format(new Date(utcTime));
-        
-        // Parse this back to a Date object (treating it as if it were UTC)
-        const timeInTargetTZAsDate = new Date(timeInTargetTZ + 'Z');
-        
-        // The difference is the timezone offset
-        const offsetMs = timeInTargetTZAsDate.getTime() - utcTime;
-        const offsetMinutes = offsetMs / (60 * 1000);
-        
-        return offsetMinutes;
+        try {
+            // Create a formatter for the target timezone
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: timezone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+
+            // Get the date components in the target timezone
+            const parts = formatter.formatToParts(date);
+            const partValues = {};
+            parts.forEach(part => {
+                partValues[part.type] = part.value;
+            });
+
+            // Construct a date object using the components as if they were in UTC
+            const timeInTargetTZAsUTC = new Date(Date.UTC(
+                parseInt(partValues.year),
+                parseInt(partValues.month) - 1,
+                parseInt(partValues.day),
+                parseInt(partValues.hour),
+                parseInt(partValues.minute),
+                parseInt(partValues.second)
+            ));
+
+            // Calculate the offset in milliseconds
+            const utcTime = date.getTime();
+            const offsetMs = timeInTargetTZAsUTC.getTime() - utcTime;
+            const offsetMinutes = offsetMs / (60 * 1000);
+
+            return offsetMinutes;
+        } catch (e) {
+            console.error('Error calculating timezone offset:', e);
+            return 0; // Fallback to 0 offset to prevent breaking the app
+        }
     }
     
     // Display the result
