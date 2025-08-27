@@ -13,7 +13,7 @@
 </div>
 
 ## 🛣️ Roadmap
-[] Embedding capability
+- [ ] Embedding capability
 
 ## 🤝 Contributions
 Contributions are welcome! Feel free to report issues, suggest features, or create pull requests for bug fixes and new features.
