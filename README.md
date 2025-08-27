@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="" alt="Time Logo">
+  <img src="https://raw.githubusercontent.com/upamanyudas/time.github.io/refs/heads/main/media/time.dmg.li.png" alt="Time Logo">
     
   # Time 
 
@@ -10,13 +10,6 @@
     <a href="https://github.com/upamanyudas/time.github.io/blob/master/LICENSE"><img src="https://img.shields.io/github/license/upamanyudas/time.github.io?style=flat-square" alt="License"></a>
 </div>
 
-</div>
-
-<div>
-    <br>
-    <p>
-    time.dmg.li is a web app which converts time across timezones with simple URL parameters.
-    </p>
 </div>
 
 ## 🤝 Contributions
