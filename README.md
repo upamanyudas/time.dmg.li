@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/upamanyudas/time.github.io/refs/heads/main/media/time.dmg.li.png" alt="Time Logo">
     
-  # Time 
+  # Time
 
   **A simple webapp for timezone conversions and sendeing event invites.**
   
