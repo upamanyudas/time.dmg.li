@@ -16,7 +16,8 @@
 body { font-family: var(--primary-font); line-height: 1.6; color: var(--text-color); background: var(--bg-color); }
 .container { max-width: 800px; margin: 0 auto; padding: 20px; min-height: 100vh; }
 header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
-.logo { display: flex; align-items: center; }
+.logo { display: flex; align-items: center; padding: 8px 8px 4px; border-radius: 6px;}
+.logo:hover { background: var(--hover-bg); }
 .logo-img { height: 40px; width: auto; }
 nav { display: flex; gap: 20px; }
 .nav-link { text-decoration: none; color: #666; font-weight: 500; padding: 8px 16px; border-radius: 6px; transition: all 0.2s; }
