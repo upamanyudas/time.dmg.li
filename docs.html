@@ -43,7 +43,7 @@
 
                 <section class="doc-section" data-keywords="date parameter format">
                     <h2>&date</h2>
-                    <p>Use YYYYMMDD format for specific dates</p>
+                    <p>Use <code>YYYYMMDD</code> format to specify a date along with the time. This is usefule when converting a time for a specific date.</p>
                     <div class="code-examples">
                         <a href="/?date=20250827">?date=20250827</a>
                         <a href="/?date=20241225">?date=20241225</a>
@@ -71,7 +71,7 @@
 
                 <section class="doc-section" data-keywords="format 12 24 hour">
                     <h2>&12 or &24</h2>
-                    <p>Control time display format</p>
+                    <p>Control output time display format</p>
                     <div class="code-examples">
                         <a href="/?time=2PM&12">?time=2PM&12</a>
                         <a href="/?time=14:00&24">?time=14:00&24</a>
@@ -88,7 +88,7 @@
 
                 <section class="doc-section" data-keywords="event calendar ical">
                     <h2>&event | &eventname | &eventdesc</h2>
-                    <p>Create calendar events with download</p>
+                    <p>Create calendar events with download. Use <code>&event</code> to enable the event mode. You can also set the name of the event using <code>&eventname</code> and add a description to the event using <code>&eventdesc</code></p>
                     <div class="code-examples">
                         <a href="/?time=2PM&event&eventname=Meeting">?time=2PM&event&eventname=Meeting</a>
                         <a href="/?time=10AM&event&eventname=Call&eventdesc=Weekly sync">?time=10AM&event&eventname=Call&eventdesc=Weekly sync</a>
@@ -98,7 +98,7 @@
 
                 <section class="doc-section" data-keywords="end time duration">
                     <h2>&endtime | &endtz</h2>
-                    <p>Set event end time and timezone</p>
+                    <p>If you want to specify an end time to your even, you can using <code>&endtime</code>. By default the timezon for the end of the event will defualt to the source timezone. But you can change that using <code>&endtz</code>.</p>
                     <div class="code-examples">
                         <a href="/?time=2PM&event&eventname=Meeting&endtime=3PM">?time=2PM&event&eventname=Meeting&endtime=3PM</a>
                         <a href="/?time=9AM&event&eventname=Workshop&endtime=5PM&endtz=EST">?time=9AM&event&eventname=Workshop&endtime=5PM&endtz=EST</a>

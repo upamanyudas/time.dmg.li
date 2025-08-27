@@ -8,10 +8,11 @@
 .docs-content { max-width: 700px; margin: 0 auto; }
 .doc-section { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
 .doc-section h2 { color: var(--accent-color); margin-bottom: 12px; font-size: 1.3rem; }
-.doc-section p { margin-bottom: 16px; color: var(--text-color); line-height: 1.5; }
+.doc-section p { margin-bottom: 16px; color: var(--text-color); line-height: 1.75; text-align: justify;}
 
-code { text-decoration: none; background: var(--code-bg); padding: 2px; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem; color: #495057; border: 1px solid #e9ecef; text-align: left; border-radius: 4px; }
 .code-examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+code { text-decoration: none; background: var(--code-bg); padding: 2px; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem; color: #495057; border: 1px solid #e9ecef; text-align: left; border-radius: 4px; }
+
 .code-examples a { text-decoration: none; background: var(--code-bg); padding: 8px 12px; border-radius: 6px; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.9rem; color: #495057; border: 1px solid #e9ecef; text-align: left; word-break: break-all; }
 .code-examples a:hover { background: var(--code-bg-hover); }
 
@@ -20,6 +21,5 @@ code { text-decoration: none; background: var(--code-bg); padding: 2px; font-fam
   .docs-header h1 { font-size: 2rem; }
   .doc-section { padding: 20px; }
   .code-examples { flex-direction: column; }
-  .code-examples a { text-align: left; word-break: break-all; overflow-wrap: break-word; hyphens: auto; font-size: 0.8rem; padding: 10px 12px; line-height: 1.4;
-  }
+  .code-examples a { text-align: left; word-break: break-all; overflow-wrap: break-word; hyphens: auto; font-size: 0.8rem; padding: 10px 12px; line-height: 1.4; }
 }
