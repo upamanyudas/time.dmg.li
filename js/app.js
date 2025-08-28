@@ -314,7 +314,7 @@ function initApp() {
             if (params.time && !params.endtime) {
                 eventEndDate = new Date(eventStartDate.getTime() + 60 * 60 * 1000);
             } else {
-                eventEndDate = parseDay(params.day, params.endtime, params.endtz || params.tz);
+                eventEndDate = parseDay(params.day, params.endtime || CONFIG.DEFAULT_END_TIME, params.endtz || params.tz);
             }
         }
 
