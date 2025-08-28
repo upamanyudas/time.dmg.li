@@ -297,21 +297,31 @@ function initApp() {
     
     // Handle event creation
     if (params.event) {
-        let endDate = targetDate;
+        console.log('Event type detected');
         
+        eventStartDate = parseTime(params.time || CONFIG.DEFAULT_TIME, params.date, params.tz);
+
         if (params.endtime || params.enddate) {
-            endDate = parseTime(params.endtime || CONFIG.DEFAULT_END_TIME, 
-                              params.enddate, params.endtz || params.tz);
+            eventEndDate = parseTime(params.endtime || CONFIG.DEFAULT_END_TIME, params.enddate || params.date, params.endtz || params.tz);
         } else {
             // Default to 1 hour duration
-            endDate = new Date(targetDate.getTime() + 60 * 60 * 1000);
+            eventEndDate = new Date(eventStartDate.getTime() + 60 * 60 * 1000);
         }
+
+        if (params.day && !params.enddate) {
+            eventStartDate = parseDay(params.day, params.time, params.tz);
+            eventEndDate = parseDay(params.day, params.endtime || params.time, params.endtz || params.tz);
+            console.log(eventEndDate)
+        }
+
+        console.log('Event Start Date:', eventStartDate);
+        console.log('Event End Date:', eventEndDate);
         
         const event = {
             title: params.eventname,
             description: params.eventdesc.replace(/\\n/g, '\n'),
-            start: targetDate,
-            end: endDate
+            start: eventStartDate,
+            end: eventEndDate
         };
         
         document.getElementById('download-btn').style.display = 'inline-block';
