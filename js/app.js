@@ -297,35 +297,24 @@ function initApp() {
     
     // Handle event creation
     if (params.event) {
-        console.log('Event type detected');
+        console.log('Event detected');
+        let endDate = targetDate;
         
-        eventStartDate = parseTime(params.time || CONFIG.DEFAULT_TIME, params.date, params.tz);
-
         if (params.endtime || params.enddate) {
-            eventEndDate = parseTime(params.endtime || CONFIG.DEFAULT_END_TIME, params.enddate || params.date, params.endtz || params.tz);
+            endDate = parseTime(params.endtime || CONFIG.DEFAULT_END_TIME, params.enddate || params.date, params.endtz || params.tz);
         } else {
             // Default to 1 hour duration
-            eventEndDate = new Date(eventStartDate.getTime() + 60 * 60 * 1000);
+            endDate = new Date(targetDate.getTime() + 60 * 60 * 1000);
         }
 
-        if (params.day && !params.enddate) {
-            console.log('Only Day Specified');
-            eventStartDate = parseDay(params.day, params.time || CONFIG.DEFAULT_TIME, params.tz);
-            if (params.time && !params.endtime) {
-                eventEndDate = new Date(eventStartDate.getTime() + 60 * 60 * 1000);
-            } else {
-                eventEndDate = parseDay(params.day, params.endtime || CONFIG.DEFAULT_END_TIME, params.endtz || params.tz);
-            }
-        }
-
-        console.log('Event Start Date:', eventStartDate);
-        console.log('Event End Date:', eventEndDate);
+        console.log('Event Start Date:', targetDate);
+        console.log('Event End Date:', endDate);
         
         const event = {
             title: params.eventname,
             description: params.eventdesc.replace(/\\n/g, '\n'),
-            start: eventStartDate,
-            end: eventEndDate
+            start: targetDate,
+            end: endDate
         };
         
         document.getElementById('download-btn').style.display = 'inline-block';
