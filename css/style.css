@@ -29,9 +29,9 @@ main { text-align: center; }
 .time-display { font-size: 5rem; font-weight: 700; color: var(--text-color); margin-bottom: 10px; }
 .date-display { font-size: 1.5rem; color: #666; margin-bottom: 5px; }
 .timezone-display { font-size: 1.2rem; color: #888; margin-bottom: 20px; }
-.countdown { font-size: 2rem; color: var(--text-color); margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 8px; }
-.download-btn { background: #000; color: var(--card-bg); border: none; padding: 12px 24px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; }
-.download-btn:hover { background: var(--text-color); }
+.countdown { font-size: 2rem; color: var(--text-color); margin: 20px 0; padding: 20px; background: var(--code-bg); border-radius: 8px; border: 1px solid #e9ecef; }
+.download-btn { background: var(--text-color); color: var(--bg-color); border: none; padding: 12px 24px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; }
+.download-btn:hover { background: var(--code-text-color); }
 .welcome h1 { font-size: 3rem; font-weight: 300; margin-bottom: 20px; }
 .welcome p { font-size: 1.3rem; color: #666; margin-bottom: 40px; }
 .examples { text-align: left; max-width: 500px; margin: 0 auto; }
@@ -57,7 +57,7 @@ main { text-align: center; }
 }
 @media (prefers-color-scheme: dark) {
   :root { 
-    --text-color: #e6e6e6; 
+    --text-color: #e4e4e4; 
     --bg-color: #121212;
     --border-color: #626262;
     --hover-bg: #3e3e3e; 
@@ -68,5 +68,9 @@ main { text-align: center; }
     --example-bg-hover: #0d2a42; 
     --accent-color: #4da3ff; 
     --shadow: 0 2px 20px rgba(0,0,0,0.6); 
+  }
+
+  .countdown {
+    border: none;
   }
 }
