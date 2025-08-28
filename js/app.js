@@ -1,7 +1,7 @@
 // Configuration
 const CONFIG = {
     DEFAULT_TIME: '09:00',
-    DEFAULT_END_TIME: '09:00'
+    DEFAULT_END_TIME: '10:00'
 };
 
 // Parse URL parameters
@@ -309,9 +309,13 @@ function initApp() {
         }
 
         if (params.day && !params.enddate) {
-            eventStartDate = parseDay(params.day, params.time, params.tz);
-            eventEndDate = parseDay(params.day, params.endtime || params.time, params.endtz || params.tz);
-            console.log(eventEndDate)
+            console.log('Only Day Specified');
+            eventStartDate = parseDay(params.day, params.time || CONFIG.DEFAULT_TIME, params.tz);
+            if (params.time && !params.endtime) {
+                eventEndDate = new Date(eventStartDate.getTime() + 60 * 60 * 1000);
+            } else {
+                eventEndDate = parseDay(params.day, params.endtime, params.endtz || params.tz);
+            }
         }
 
         console.log('Event Start Date:', eventStartDate);
