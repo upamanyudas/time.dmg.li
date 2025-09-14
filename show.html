@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google SEO Meta Tags -->
+    <meta name="description" content="Convert time across timezones with simple URL parameters. Easy timezone conversion tool with calendar integration and link sharing capabilities.">
+    <meta name="keywords" content="timezone converter, time converter, timezone, time, calendar, UTC, IST, EST, PST, GMT">
+    <meta name="author" content="Timezone Converter">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="time.dmg.li">
+    <meta property="og:description" content="Convert time across timezones with simple URL parameters. Easy timezone conversion tool with calendar integration and link sharing capabilities.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://time.dmg.li">
+    <meta property="og:image" content="https://time.dmg.li/media/time.dmg.li.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="time.dmg.li">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Timezone Converter">
+    <meta name="twitter:description" content="Convert time across timezones with simple URL parameters. Easy timezone conversion tool with calendar integration and link sharing capabilities.">
+    <meta name="twitter:image" content="https://time.dmg.li/media/time.dmg.li.png">
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#007bff">
+    <meta name="msapplication-TileColor" content="#007bff">
+    <link rel="canonical" href="https://time.dmg.li">
+    
+    <title>The Wild Bits Show</title>
+    <link rel="icon" type="image/svg+xml" href="/media/twb/logomark-dark.svg">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; }
+        .logo { display: flex; align-items: center; padding: 8px 8px 4px; border-radius: 6px; }
+        .logo:hover { background: var(--hover-bg); }
+        .logo-img { height: 40px; width: auto; }
+        .show-logo { font-size: 3rem; font-weight: bold; color: #143a37; margin-bottom: 20px; text-align: center; }
+        .show-logo svg { height: 60px; width: auto; margin-right: 15px; vertical-align: middle; }
+        .hosted-by { text-align: center; color: var(--text-color-secondary); margin-bottom: 30px; font-size: 1.1rem; }
+        .show-info { background: var(--card-bg); border-radius: 12px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 20px; }
+        .live-status { background: #143a37; color: white; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 1.5rem; font-weight: bold; }
+        .youtube-embed { margin: 20px 0; }
+        .comment-section { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-top: 20px; }
+        .comment-form { display: flex; gap: 10px; margin-top: 15px; }
+        .comment-form input { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; }
+        .comment-form button { padding: 10px 20px; background: var(--accent-color); color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .logo { display: none; }
+
+        /* New styles for app & social link blocks */
+        .links-row { display:flex; justify-content:center; gap:28px; align-items:center; margin-top: 18px; margin-bottom: 6px; flex-wrap:wrap; }
+        .apps, .socials { display:flex; gap:12px; align-items:center; }
+        .app-link, .social-link { display:inline-flex; align-items:center; gap:8px; padding:6px 8px; border-radius:8px; text-decoration:none; color:inherit; font-size:0.95rem; border:1px solid transparent; transition:background .15s, box-shadow .15s, transform .06s; }
+        .app-link svg, .social-link svg { width:22px; height:22px; display:block; }
+        .app-link:hover, .social-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.04); }
+        .apps .label { display:none; } /* hide text label on small apps area to keep compact; remove if you want labels visible */
+        @media (min-width:720px) {
+            .apps .label { display:inline-block; font-size:0.95rem; margin-left:6px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="/"><img src="logo.svg" alt="Timezone Converter" class="logo-img"></a>
+            </div>
+            <nav id="navigation">
+                <a href="/" class="nav-link active">Converter</a>
+                <a href="/creator.html" class="nav-link">Link Creator</a>
+                <a href="/docs.html" class="nav-link">Docs</a>
+            </nav>
+        </header>
+
+        <main id="converter-view">
+            <div class="show-logo">
+                <img src="media/twb/logomark-dark.svg" alt="Timezone Converter" class="logo-img">
+                The Wild Bits Show
+            </div>
+
+            <div class="hosted-by">Hosted by <a href="https://www.instagram.com/cloudstudio/">@cloudstudio</a> & <a href="https://www.instagram.com/megsontheroad/">@megsontheroad</a></div>
+
+            <!-- INSERTED: Podcast app links + social links -->
+            <div class="links-row" aria-hidden="false">
+                <div class="apps" role="list" aria-label="Podcast apps">
+                    <!-- Apple Podcasts -->
+                    <a class="app-link" role="listitem" href="https://podcasts.apple.com/in/podcast/the-wild-bits-show/id1826380029" target="_blank" title="Apple Podcasts" aria-label="Apple Podcasts">
+                        <!-- Apple Podcasts SVG (simplified) -->
+                        <img src="media/twb/podcasts-podcasts.svg" alt="Apple Podcasts" width="24" height="24">
+                        <span class="label">Apple</span>
+                    </a>
+
+                    <!-- Spotify -->
+                    <a class="app-link" role="listitem" href="https://open.spotify.com/show/6h4Qkq1L1s9H2mKUj447gg" target="_blank" title="Spotify" aria-label="Spotify">
+                        <img src="media/twb/podcasts-spotify.svg" alt="Spotify" width="24" height="24">
+                        <span class="label">Spotify</span>
+                    </a>
+
+                    <!-- Deezer -->
+                    <a class="app-link" role="listitem" href="https://www.deezer.com/en/show/1312814452" target="_blank" title="Deezer" aria-label="Deezer">
+                        <img src="media/twb/podcasts-deezer.svg" alt="Deezer" width="24" height="24">
+                        <span class="label">Deezer</span>
+                    </a>
+
+                    <!-- Amazon Music -->
+                    <a class="app-link" role="listitem" href="https://music.amazon.in/podcasts/3892250c-1974-426b-8804-e9528a6b7777/the-wild-bits-show" target="_blank" title="Amazon Music" aria-label="Amazon Music">
+                        <img src="media/twb/podcasts-amazon_music.svg" alt="Amazon Music" width="24" height="24">
+                        <span class="label">Amazon</span>
+                    </a>
+
+                    <!-- YouTube Music -->
+                    <a class="app-link" role="listitem" href="https://music.youtube.com/playlist?list=PL3_26jJp6gP8FZkQ4DjU9BqN_2QeWQ1qK" target="_blank" title="YouTube Music" aria-label="YouTube Music">
+                        <img src="media/twb/podcasts-youtube_music.svg" alt="YouTube Music" width="24" height="24">
+                        <span class="label">YouTube Music</span>
+                    </a>
+                </div>
+
+                <div class="socials" role="list" aria-label="Social links">
+                    <!-- Ko-fi -->
+                    <a class="social-link" role="listitem" href="https://ko-fi.com/thewildbits" target="_blank" title="Ko-fi channel" aria-label="Ko-fi">
+                        <img src="media/twb/Ko-fi.svg" alt="Ko-fi" width="24" height="24">
+                    </a>
+
+                    <!-- YouTube -->
+                    <a class="social-link" role="listitem" href="https://www.youtube.com/@thewildbits" target="_blank" title="YouTube channel" aria-label="YouTube">
+                        <img src="media/twb/social-youtube.svg" alt="YouTube" width="24" height="24">
+                    </a>
+
+                    <!-- Instagram -->
+                    <a class="social-link" role="listitem" href="https://www.instagram.com/thewildbitsprod/" target="_blank" title="Instagram" aria-label="Instagram">
+                        <img src="media/twb/social-instagram.svg" alt="Instagram" width="24" height="24">
+                    </a>
+
+                    <!-- Facebook -->
+                    <a class="social-link" role="listitem" href="https://www.facebook.com/thewildbitsprod/" target="_blank" title="Facebook" aria-label="Facebook">
+                        <img src="media/twb/social-facebook.svg" alt="Facebook" width="24" height="24">
+                    </a>
+
+                    <!-- Twitch -->
+                    <a class="social-link" role="listitem" href="https://www.twitch.tv/thewildbitsprod/" target="_blank" title="Twitch" aria-label="Twitch">
+                        <img src="media/twb/social-twitch.svg" alt="Twitch" width="24" height="24">
+                    </a>
+
+                    <!-- X (Twitter) -->
+                    <a class="social-link" role="listitem" href="https://x.com/thewildbitsprod" target="_blank" title="X (Twitter)" aria-label="X">
+                        <img src="media/twb/social-x.svg" alt="X" width="24" height="24">
+                    </a>
+
+                    <!-- TikTok -->
+                    <a class="social-link" role="listitem" href="https://www.tiktok.com/@thewildbitsprod" target="_blank" title="TikTok" aria-label="TikTok">
+                        <img src="media/twb/social-tiktok.svg" alt="TikTok" width="24" height="24">
+                    </a>
+
+                    <!-- Kick -->
+                    <a class="social-link" role="listitem" href="https://www.kick.com/thewildbitsprod" target="_blank" title="Kick" aria-label="Kick">
+                        <img src="media/twb/social-kick.svg" alt="Kick" width="24" height="24">
+                    </a>
+                </div>
+            </div>
+            <!-- END INSERT -->
+
+            <br><br>
+
+            <div class="result-card" id="result-card" style="display: none;">
+                <iframe 
+                    src="https://www.youtube.com/embed/live_stream?channel=UCViBwsOJfQRkVjmKuYLgjqA&autoplay=1" 
+                    title="The Wild Bits Show"
+                    id="twb-show-live-embed"
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen
+                    style="width:100%; aspect-ratio:16/9; border:0;display:none;">
+                </iframe>
+                <div class="time-display" id="time-display"></div>
+                <div class="date-display" id="date-display"></div>
+                <div class="timezone-display" id="timezone-display"></div>
+                <div class="countdown" id="countdown" style="display: none;"></div>
+                <button id="download-btn" class="download-btn" style="display: none;">
+                    📅 Add to Calendar
+                </button>
+            </div>
+
+            <div class="welcome" id="welcome"></div>
+        </main>
+    </div>
+    
+    <script src="js/timezones.js"></script>
+    <script src="js/ical.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const observer = new MutationObserver(() => {
+            const element = document.getElementById('countdown');
+            if (element && element.textContent.trim() === 'Event has started!') {
+                ['time-display', 'date-display', 'timezone-display'].forEach(id => document.getElementById(id)?.style.setProperty('display', 'none'));
+                document.getElementById('twb-show-live-embed').style.display = 'block';
+                observer.disconnect();
+            }
+        });
+        observer.observe(document.body, {childList: true, subtree: true, characterData: true});
+    </script>
+</body>
+</html>
