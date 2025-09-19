@@ -60,6 +60,9 @@
         .app-link svg, .social-link svg { width:22px; height:22px; display:block; }
         .app-link:hover, .social-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.04); }
         .apps .label { display:none; } /* hide text label on small apps area to keep compact; remove if you want labels visible */
+        .hosted-by a { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: inherit; padding: 4px 8px; border-radius: 20px; background: rgba(0,0,0,0.05); transition: all 0.2s ease; }
+        .hosted-by a:hover { background: rgba(0,0,0,0.1); transform: translateY(-1px); }
+        .hosted-by img { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); object-fit: cover; }
         @media (min-width:720px) {
             .apps .label { display:inline-block; font-size:0.95rem; margin-left:6px; }
         }
@@ -84,7 +87,11 @@
                 The Wild Bits Show
             </div>
 
-            <div class="hosted-by">Hosted by <a href="https://www.instagram.com/cloudstudio/">@cloudstudio</a> & <a href="https://www.instagram.com/megsontheroad/">@megsontheroad</a></div>
+            <div class="hosted-by">
+                Hosted by <a href="https://www.instagram.com/cloudstudio/"><img src="media/twb/cloudstudio.png" alt="@cloudstudio" onerror="this.style.display='none'">@cloudstudio</a> 
+                & 
+                <a href="https://www.instagram.com/megsontheroad/"><img src="media/twb/megsontheroad.png" alt="@megsontheroad" onerror="this.style.display='none'">@megsontheroad</a>
+            </div>
 
             <!-- INSERTED: Podcast app links + social links -->
             <div class="links-row" aria-hidden="false">
