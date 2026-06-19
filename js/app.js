@@ -15,6 +15,7 @@ function parseParams() {
         format12: params.has('12') || (!params.has('24')),
         format24: params.has('24'),
         countdown: params.has('countdown'),
+        noDateDisplay: params.has('nodatedisplay') || params.has('ndd'),
         event: params.has('event'),
         eventname: params.get('eventname') || 'Event',
         eventdesc: params.get('eventdesc') || '',
@@ -286,6 +287,7 @@ function initApp() {
     const format24 = params.format24;
     document.getElementById('time-display').textContent = formatTime(targetDate, format24);
     document.getElementById('date-display').textContent = formatDate(targetDate);
+    document.getElementById('date-display').style.display = params.noDateDisplay ? 'none' : '';
     document.getElementById('timezone-display').textContent = getTimezoneDisplay(targetDate);
     
     // Handle countdown

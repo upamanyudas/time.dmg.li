@@ -41,6 +41,7 @@ function generateURL() {
     const timezone = document.getElementById('timezone').value;
     const format = document.querySelector('input[name="format"]:checked').value;
     const countdown = document.getElementById('countdown').checked;
+    const noDateDisplay = document.getElementById('nodatedisplay').checked;
     const event = document.getElementById('event').checked;
     const eventname = document.getElementById('eventname').value;
     const eventdesc = document.getElementById('eventdesc').value;
@@ -85,6 +86,11 @@ function generateURL() {
     // Add countdown
     if (countdown) {
         params.set('countdown', '');
+    }
+
+    // Add no-date-display
+    if (noDateDisplay) {
+        params.set('ndd', '');
     }
     
     // Add event parameters
@@ -148,6 +154,7 @@ function initCreator() {
         radio.addEventListener('change', generateURL);
     });
     document.getElementById('countdown').addEventListener('change', generateURL);
+    document.getElementById('nodatedisplay').addEventListener('change', generateURL);
     document.getElementById('event').addEventListener('change', toggleEventOptions);
     document.getElementById('eventname').addEventListener('input', generateURL);
     document.getElementById('eventdesc').addEventListener('input', generateURL);
